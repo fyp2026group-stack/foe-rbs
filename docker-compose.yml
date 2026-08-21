@@ -1,0 +1,200 @@
+
+#NETWORKS
+networks:
+  foe_rbs_network:
+    driver: bridge
+
+#SERVICES
+services:
+
+  #POSTGRESQL DATABASES (One for each service with data)
+  db_auth:
+    image: postgres:15-alpine
+    container_name: foe_rbs_db_auth
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - auth_data:/var/lib/postgresql/data
+    # ports:
+    #   - "5432:5432"
+    networks:
+      - foe_rbs_network
+
+  db_resource:
+    image: postgres:15-alpine
+    container_name: foe_rbs_db_resource
+    environment:
+      POSTGRES_DB: resource_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - resource_data:/var/lib/postgresql/data
+    # ports:
+    #   - "5433:5432"
+    networks:
+      - foe_rbs_network
+ 
+  db_settings:
+    image: postgres:15-alpine
+    container_name: foe_rbs_db_settings
+    environment:
+      POSTGRES_DB: settings_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - settings_data:/var/lib/postgresql/data
+    # ports:
+    #   - "5435:5432"
+    networks:
+      - foe_rbs_network
+
+  db_booking:
+    image: postgres:15-alpine
+    container_name: foe_rbs_db_booking
+    environment:
+      POSTGRES_DB: booking_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - booking_data:/var/lib/postgresql/data
+    # ports:
+    #   - "5434:5432"
+    networks:
+      - foe_rbs_network
+
+  redis_cache:
+    image: redis:alpine
+    container_name: foe_rbs_redis
+    ports:
+      - "6380:6379"
+    networks:
+      - foe_rbs_network
+
+
+  #API GATEWAY (Fixed to use Laravel Artisan Serve)
+  api_gateway:
+    build:
+      context: ./api-gateway/
+      dockerfile: Dockerfile
+    container_name: foe_rbs_api_gateway
+    volumes:
+      - ./api-gateway:/var/www/html
+      - /var/www/html/vendor
+    ports:
+      - "8000:80"
+    networks:
+      - foe_rbs_network
+    depends_on:
+      - db_auth
+      - auth_service
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend/
+      dockerfile: Dockerfile.dev
+    container_name: foe_rbs_frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+
+    networks:
+      - foe_rbs_network
+    command: ["npm", "run", "dev"]
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000/api
+    restart: unless-stopped
+
+
+  #MICROSERVICES (The backend logic - PHP-FPM containers)
+  auth_service:
+    build:
+      context: ./services/auth_service/
+      dockerfile: Dockerfile
+    container_name: foe_rbs_auth_service
+    volumes:
+      - ./services/auth_service:/var/www/html
+      - /var/www/html/vendor
+    ports:
+      - "8001:80"
+    environment:
+      DB_HOST: db_auth
+      DB_PORT: 5432
+      DB_DATABASE: auth_db
+    networks:
+      - foe_rbs_network
+    depends_on:
+      - db_auth
+    restart: unless-stopped
+
+  booking_service:
+    build:
+      context: ./services/booking_service/
+      dockerfile: Dockerfile
+    container_name: foe_rbs_booking_service
+    volumes:
+      - ./services/booking_service:/var/www/html
+      - /var/www/html/vendor
+    environment:
+      DB_HOST: db_booking
+      DB_PORT: 5432
+      DB_DATABASE: booking_db
+      RESOURCE_SERVICE_URL: http://resource_service/api
+      CACHE_DRIVER: redis
+      REDIS_HOST: redis_cache
+      REDIS_PORT: 6379
+      REDIS_CLIENT: predis
+    networks:
+      - foe_rbs_network
+    depends_on:
+      - db_booking
+    restart: unless-stopped
+
+  resource_service:
+    build:
+      context: ./services/resource_service/
+      dockerfile: Dockerfile
+    container_name: foe_rbs_resource_service
+    volumes:
+      - ./services/resource_service:/var/www/html
+      - /var/www/html/vendor
+    environment:
+      DB_HOST: db_resource
+      DB_PORT: 5432
+      DB_DATABASE: resource_db
+    networks:
+      - foe_rbs_network
+    depends_on:
+      - db_resource
+    restart: unless-stopped
+
+  system_settings_service:
+    build:
+      context: ./services/system_settings_service/
+      dockerfile: Dockerfile
+    container_name: foe_rbs_system_settings_service
+    volumes:
+      - ./services/system_settings_service:/var/www/html
+      - /var/www/html/vendor
+    ports:
+      - "8002:80"
+    environment:
+      DB_HOST: db_settings
+      DB_PORT: 5432
+      DB_DATABASE: settings_db
+    networks:
+      - foe_rbs_network
+    depends_on:
+      - db_settings
+    restart: unless-stopped
+
+#VOLUMES (Data Persistence)
+volumes:
+  auth_data:
+  resource_data:
+  booking_data:
+  settings_data:
