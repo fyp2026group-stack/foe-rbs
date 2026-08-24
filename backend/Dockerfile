@@ -1,21 +1,18 @@
-FROM php:8.2-apache
+FROM php:8.2-cli
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends libpq-dev unzip \
+    && apt-get install -y --no-install-recommends libpq-dev unzip git curl \
     && docker-php-ext-install pdo_pgsql \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && rm -rf /var/lib/apt/lists/*
 
-RUN a2dismod mpm_event || true \
-    && a2enmod rewrite mpm_prefork
-
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY . .
+
 RUN composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R ug+rwX storage bootstrap/cache \
-    && ln -s ../storage/app/public public/storage \
-    && sed -ri 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
+    && ln -s ../storage/app/public public/storage
 
-EXPOSE 80
-CMD ["/bin/sh", "-c", "sed -i \"s/80/${PORT:-10000}/g\" /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf && apache2-foreground"]
+EXPOSE 8000
+CMD ["/bin/sh", "-c", "php artisan config:cache >/dev/null 2>&1 || true; php artisan route:cache >/dev/null 2>&1 || true; php artisan serve --host 0.0.0.0 --port ${PORT:-8000}"]
