@@ -3,8 +3,10 @@ FROM php:8.2-apache
 RUN apt-get update \
     && apt-get install -y --no-install-recommends libpq-dev unzip \
     && docker-php-ext-install pdo_pgsql \
-    && a2enmod rewrite \
     && rm -rf /var/lib/apt/lists/*
+
+RUN a2dismod mpm_event || true \
+    && a2enmod rewrite mpm_prefork
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
