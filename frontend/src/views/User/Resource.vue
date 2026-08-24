@@ -60,7 +60,7 @@
             <div class="card-img-container bg-light">
               <img 
                 v-if="resource.images && resource.images.length > 0" 
-                :src="'http://localhost:8000/api/resources/storage/' + resource.images[0].file_path" 
+                :src="STORAGE_URL_ROOT + '/' + resource.images[0].file_path" 
                 class="card-img-top" 
                 alt="Resource Image"
                 @error="handleImageError"
@@ -133,6 +133,7 @@ const selectedResource = ref<any>(null);
 const reserveModalRef = ref<HTMLElement | null>(null);
 let modalInstance: bootstrap.Modal | null = null;
 const isSubmitting = ref(false);
+const STORAGE_URL_ROOT = import.meta.env.VITE_STORAGE_URL || `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'}/resources/storage`;
 
 const today = new Date();
 const minDate = new Date(today.getTime() - (today.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
@@ -233,7 +234,7 @@ const submitReservation = async () => {
       ]
     };
 
-    const response = await axios.post('http://localhost:8000/api/bookings', payload, {
+    const response = await axios.post(((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + '/bookings'), payload, {
       headers: { Authorization: `Bearer ${token}` }
     });
 

@@ -46,7 +46,7 @@ export const bookingStore = reactive({
     this.isLoading = true;
     try {
       const token = this.getAuthToken();
-      const response = await axios.get('http://localhost:8000/api/bookings', {
+      const response = await axios.get(((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + '/bookings'), {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Accept': 'application/json',
@@ -77,7 +77,7 @@ export const bookingStore = reactive({
     this.isLoading = true;
     try {
       const token = this.getAuthToken();
-      const response = await axios.get('http://localhost:8000/api/bookings/my', {
+      const response = await axios.get(((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + '/bookings/my'), {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Accept': 'application/json',
@@ -111,7 +111,7 @@ export const bookingStore = reactive({
     this.isLoading = true;
     try {
       const token = this.getAuthToken();
-      const response = await axios.get(`http://localhost:8000/api/bookings/resource/${resourceId}`, {
+      const response = await axios.get(((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + `/bookings/resource/${resourceId}`), {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Accept': 'application/json',
@@ -151,7 +151,7 @@ export const bookingStore = reactive({
     this.isLoading = true;
     try {
       const token = this.getAuthToken();
-      const response = await axios.get(`http://localhost:8000/api/bookings/admin/assigned?admin_id=${adminId}`, {
+      const response = await axios.get(((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + `/bookings/admin/assigned?admin_id=${adminId}`), {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Accept': 'application/json',
@@ -183,10 +183,10 @@ export const bookingStore = reactive({
     try {
       const token = this.getAuthToken();
       const [personalRes, assignedRes] = await Promise.all([
-        axios.get('http://localhost:8000/api/bookings/my', {
+        axios.get(((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + '/bookings/my'), {
           headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
         }),
-        axios.get(`http://localhost:8000/api/bookings/admin/assigned?admin_id=${adminId}`, {
+        axios.get(((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + `/bookings/admin/assigned?admin_id=${adminId}`), {
           headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
         })
       ]);
@@ -215,7 +215,7 @@ export const bookingStore = reactive({
   async fetchGuestBookings(email: string) {
     this.isLoading = true;
     try {
-      const response = await axios.get(`http://localhost:8000/api/bookings/guest-lookup?email=${encodeURIComponent(email)}`, {
+      const response = await axios.get(((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + `/bookings/guest-lookup?email=${encodeURIComponent(email)}`), {
         headers: {
           'Accept': 'application/json',
         }

@@ -51,7 +51,7 @@ const userRole = ref(localStorage.getItem('userRole') || 'Member');
 const isLoggingOut = ref(false);
 const isScrolled = ref(false);
 
-const API_LOGOUT_URL = 'http://localhost:8000/api/logout';
+const API_LOGOUT_URL = ((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + '/logout');
 
 const handleScroll = () => {
   isScrolled.value = window.scrollY > 20;

@@ -207,7 +207,7 @@ const errorMessage = ref('');
 const assignedAdminNames = ref<string[]>([]);
 const isLoadingAdmins = ref(false);
 
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api');
 
 const sortedAvailability = computed(() => {
   if (!resource.value?.availability) return [];

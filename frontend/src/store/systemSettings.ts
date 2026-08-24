@@ -23,7 +23,7 @@ export const systemStore = reactive({
     if (this.isLoaded && !force) return;
 
     try {
-      const res = await axios.get('http://localhost:8000/api/settings');
+      const res = await axios.get(((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + '/settings'));
       this.updateState(res.data);
     } catch (e) {
       console.error("Store fetch failed", e);
@@ -50,7 +50,7 @@ export const systemStore = reactive({
       const filename = data.logo.split('/').pop();
       // Cache-busting timestamp ensures the logo updates instantly in the browser
       const timestamp = new Date().getTime();
-      this.logo = `http://localhost:8000/api/settings/logo/${filename}?t=${timestamp}`;
+      this.logo = ((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + `/settings/logo/${filename}?t=${timestamp}`);
     }
     
     this.isLoaded = true;

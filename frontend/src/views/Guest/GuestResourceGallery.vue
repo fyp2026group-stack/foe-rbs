@@ -105,7 +105,7 @@ const sortedResources = computed(() => {
 const getMainImage = (resource: any) => {
   if (resource.images && resource.images.length > 0) {
     const sorted = [...resource.images].sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
-    return `http://localhost:8000/api/resources/storage/${sorted[0].file_path}`;
+    return ((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + `/resources/storage/${sorted[0].file_path}`);
   }
   return 'https://via.placeholder.com/600x400?text=No+Image';
 };

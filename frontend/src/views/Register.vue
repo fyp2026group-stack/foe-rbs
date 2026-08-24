@@ -133,7 +133,7 @@ import { useRouter } from 'vue-router';
 import defaultLogoUrl from '../assets/logo.png';
 import { systemStore } from '../store/systemSettings';
 
-const API_URL = 'http://localhost:8000/api/register'; 
+const API_URL = ((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + '/register'); 
 const router = useRouter();
 
 const fullName = ref('');
@@ -158,7 +158,7 @@ onMounted(async () => {
     systemStore.loadSettings();
     isFetchingDepartments.value = true;
     try {
-        const response = await fetch('http://localhost:8000/api/departments');
+        const response = await fetch(((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + '/departments'));
         if (response.ok) {
             departments.value = await response.json();
         } else {

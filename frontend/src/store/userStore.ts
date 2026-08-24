@@ -14,7 +14,7 @@ export const userStore = reactive({
     this.isLoading = true;
     try {
       const token = localStorage.getItem('authToken');
-      const res = await axios.get('http://localhost:8000/api/users', {
+      const res = await axios.get(((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + '/users'), {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -56,7 +56,7 @@ export const userStore = reactive({
   async fetchUserPermissions(userId: number | string) {
     try {
       const token = localStorage.getItem('authToken');
-      const res = await axios.get(`http://localhost:8000/api/users/${userId}/permissions`, {
+      const res = await axios.get(((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + `/users/${userId}/permissions`), {
         headers: { Authorization: `Bearer ${token}` }
       });
       return res.data.permissions; // Array of slugs
@@ -70,7 +70,7 @@ export const userStore = reactive({
   async updateUserPermission(userId: number | string, permissionSlug: string, isAllowed: boolean) {
     try {
       const token = localStorage.getItem('authToken');
-      await axios.post(`http://localhost:8000/api/users/${userId}/permissions`, {
+      await axios.post(((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + `/users/${userId}/permissions`), {
         permission_slug: permissionSlug,
         is_allowed: isAllowed
       }, {

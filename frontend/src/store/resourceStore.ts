@@ -20,9 +20,9 @@ export const resourceStore = reactive({
 
       
       const [resResources, resCategories, resDepartments] = await Promise.all([
-        axios.get('http://localhost:8000/api/resources', { headers }),
-        axios.get('http://localhost:8000/api/categories', { headers }),
-        axios.get('http://localhost:8000/api/departments', { headers })
+        axios.get(((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + '/resources'), { headers }),
+        axios.get(((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + '/categories'), { headers }),
+        axios.get(((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + '/departments'), { headers })
       ]);
 
       this.resources = resResources.data.resources || resResources.data || [];

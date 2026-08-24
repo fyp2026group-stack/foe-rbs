@@ -17,7 +17,7 @@ export const reportStore = reactive({
     this.isLoading = true;
     const token = localStorage.getItem('authToken');
     const headers = { Authorization: `Bearer ${token}`, Accept: 'application/json' };
-    const API_BASE_URL = 'http://localhost:8000/api';
+    const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api');
 
     try {
       // 2. Fetch all data in parallel for maximum performance

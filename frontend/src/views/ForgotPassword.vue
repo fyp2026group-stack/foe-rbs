@@ -103,7 +103,7 @@ const showSuccessMessage = ref(false);
 const isLoading = ref(false);
 const errorMessage = ref('');
 
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api');
 
 const getStepDescription = () => {
   if (step.value === 1) return 'Enter your email to receive reset instructions';

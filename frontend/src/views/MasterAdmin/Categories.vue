@@ -178,7 +178,7 @@ import Navbar from '../../components/Navbar.vue';
 import MasterAdminSidebar from '../../components/Sidebar/MasterAdminSidebar.vue';
 
 // --- API CONFIG ---
-const API_BASE_URL = 'http://localhost:8000/api'; 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'); 
 const CATEGORIES_API_URL = `${API_BASE_URL}/categories`; 
 const getAuthToken = () => localStorage.getItem('authToken');
 

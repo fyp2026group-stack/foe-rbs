@@ -128,7 +128,7 @@ onMounted(async () => {
 const fetchProfile = async () => {
   try {
     const token = localStorage.getItem('authToken');
-    const res = await axios.get('http://localhost:8000/api/user', {
+    const res = await axios.get(((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + '/user'), {
       headers: { Authorization: `Bearer ${token}` }
     });
     const u = res.data;
@@ -146,7 +146,7 @@ const fetchProfile = async () => {
 
 const fetchDepartments = async () => {
   try {
-    const res = await axios.get('http://localhost:8000/api/departments');
+    const res = await axios.get(((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + '/departments'));
     departments.value = res.data;
   } catch (err) {
     console.error("Failed to fetch departments", err);
@@ -173,7 +173,7 @@ const updateProfile = async () => {
       payload.password = profileForm.value.password;
     }
 
-    const res = await axios.put('http://localhost:8000/api/user/profile', payload, {
+    const res = await axios.put(((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + '/user/profile'), payload, {
       headers: { Authorization: `Bearer ${token}` }
     });
 

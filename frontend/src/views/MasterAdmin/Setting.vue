@@ -133,7 +133,7 @@ const saveSettings = async () => {
 
   try {
     const token = localStorage.getItem('authToken');
-    const response = await axios.post('http://localhost:8000/api/settings', formData, {
+    const response = await axios.post(((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + '/settings'), formData, {
       headers: { 
         'Content-Type': 'multipart/form-data',
         'Authorization': `Bearer ${token}`

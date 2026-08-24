@@ -109,7 +109,7 @@ import { resourceStore } from '../../store/resourceStore';
 import AdminSidebar from '../../components/Sidebar/Admin_Sidebar.vue';
 
 // --- API CONFIG ---
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api');
 const getAuthToken = () => localStorage.getItem('authToken');
 
 // --- STATE ---

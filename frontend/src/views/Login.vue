@@ -108,8 +108,8 @@ onUnmounted(() => {
   document.body.style.overflow = 'auto';
 });
 
-const API_URL = 'http://localhost:8000/api/login';
-const GUEST_LOGIN_URL = 'http://localhost:8000/api/guest-login';
+const API_URL = ((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + '/login');
+const GUEST_LOGIN_URL = ((import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api') + '/guest-login');
 
 // Helper function to extract role ID from user data
 const extractRoleId = (user: any): number => {
