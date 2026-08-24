@@ -1,50 +1,61 @@
-# ==============================================================================
-# Faculty of Engineering Resource Booking System (FOE-RBS) - Root .gitignore
-# ==============================================================================
+# ==========================================
+# FOE-RBS monorepo gitignore
+# ==========================================
 
-# OS generated files
+# OS files
 .DS_Store
-.DS_Store?
 ._*
 .Spotlight-V100
 .Trashes
-ehthumbs.db
 Thumbs.db
+Desktop.ini
 
-# IDE & Editor files
+# Editors / IDEs
+.vscode/
 .idea/
-.vscode/*
-!.vscode/extensions.json
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-*.sublime-project
-*.sublime-workspace
 .fleet/
+*.swp
+*.swo
+*.tmp
 
 # Environment files
 .env
 .env.*
 !.env.example
 !.env.*.example
-*.env.backup
-*.env.production
+*.local
+*.backup
+*.production
 
-# Dependency directories
-node_modules/
-vendor/
-*/vendor/
-*/node_modules/
+# Node / frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.cache/
 
-# Logs and temporary files
+# PHP / backend
+backend/vendor/
+backend/node_modules/
+backend/storage/app/public/
+backend/public/storage/
+backend/bootstrap/cache/*
+!backend/bootstrap/cache/.gitignore
+backend/storage/framework/cache/*
+!backend/storage/framework/cache/.gitignore
+backend/storage/framework/sessions/*
+!backend/storage/framework/sessions/.gitignore
+backend/storage/framework/views/*
+!backend/storage/framework/views/.gitignore
+backend/storage/framework/testing/*
+!backend/storage/framework/testing/.gitignore
+backend/storage/logs/*
+!backend/storage/logs/.gitignore
+backend/storage/*.key
+
+# Logs and debug files
 *.log
-logs/
-*/storage/logs/*.log
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 safe_log.txt
@@ -53,30 +64,33 @@ out.json
 out2.txt
 routes.txt
 
-# Build outputs & caches
+# Build outputs
+build/
 dist/
 dist-ssr/
-build/
-*/public/build
-*/public/hot
-*/storage/framework/cache/data/*
-!*/storage/framework/cache/data/.gitignore
-*/storage/framework/sessions/*
-!*/storage/framework/sessions/.gitignore
-*/storage/framework/views/*
-!*/storage/framework/views/.gitignore
-*/storage/framework/testing/*
-!*/storage/framework/testing/.gitignore
-*/bootstrap/cache/*
-!*/bootstrap/cache/.gitignore
-.phpunit.result.cache
+coverage/
 
-# Application keys & credentials
-storage/*.key
-*/storage/*.key
+# Temporary / local test artifacts
+*.bak
+*.orig
+*.rej
+
+test_cors.js
+test_rbac.php
+
+# Docker / local runtime
+*.pid
+*.sock
+
+# Secrets and credentials
+*.pem
+*.key
 auth.json
 Homestead.json
 Homestead.yaml
 
-# Docker volume data
-*/data/
+# Keep required example files
+!frontend/.env.example
+!backend/.env.example
+!.env.example
+

@@ -1,40 +1,25 @@
-#NETWORKS
 networks:
   foe_rbs_network:
     driver: bridge
 
-#SERVICES
 services:
-
-  redis_cache:
-    image: redis:alpine
-    container_name: foe_rbs_redis
-    ports:
-      - "6380:6379"
-    networks:
-      - foe_rbs_network
-
-
-  #API GATEWAY
-  api_gateway:
+  backend:
     build:
-      context: ./api-gateway/
+      context: ./backend
       dockerfile: Dockerfile
-    container_name: foe_rbs_api_gateway
+    container_name: foe_rbs_backend
     volumes:
-      - ./api-gateway:/var/www/html
+      - ./backend:/var/www/html
       - /var/www/html/vendor
     ports:
       - "8000:80"
     networks:
       - foe_rbs_network
-    depends_on:
-      - auth_service
     restart: unless-stopped
 
   frontend:
     build:
-      context: ./frontend/
+      context: ./frontend
       dockerfile: Dockerfile.dev
     container_name: foe_rbs_frontend
     volumes:
@@ -47,64 +32,6 @@ services:
     command: ["npm", "run", "dev"]
     environment:
       VITE_API_BASE_URL: http://localhost:8000/api
-    restart: unless-stopped
-
-
-  #MICROSERVICES
-  auth_service:
-    build:
-      context: ./services/auth_service/
-      dockerfile: Dockerfile
-    container_name: foe_rbs_auth_service
-    volumes:
-      - ./services/auth_service:/var/www/html
-      - /var/www/html/vendor
-    ports:
-      - "8001:80"
-    networks:
-      - foe_rbs_network
-    restart: unless-stopped
-
-  booking_service:
-    build:
-      context: ./services/booking_service/
-      dockerfile: Dockerfile
-    container_name: foe_rbs_booking_service
-    volumes:
-      - ./services/booking_service:/var/www/html
-      - /var/www/html/vendor
-    environment:
-      RESOURCE_SERVICE_URL: http://resource_service/api
-      CACHE_DRIVER: redis
-      REDIS_HOST: redis_cache
-      REDIS_PORT: 6379
-      REDIS_CLIENT: predis
-    networks:
-      - foe_rbs_network
-    restart: unless-stopped
-
-  resource_service:
-    build:
-      context: ./services/resource_service/
-      dockerfile: Dockerfile
-    container_name: foe_rbs_resource_service
-    volumes:
-      - ./services/resource_service:/var/www/html
-      - /var/www/html/vendor
-    networks:
-      - foe_rbs_network
-    restart: unless-stopped
-
-  system_settings_service:
-    build:
-      context: ./services/system_settings_service/
-      dockerfile: Dockerfile
-    container_name: foe_rbs_system_settings_service
-    volumes:
-      - ./services/system_settings_service:/var/www/html
-      - /var/www/html/vendor
-    ports:
-      - "8002:80"
-    networks:
-      - foe_rbs_network
+    depends_on:
+      - backend
     restart: unless-stopped

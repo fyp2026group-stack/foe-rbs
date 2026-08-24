@@ -1,4 +1,0 @@
-# services/resource-service/.dockerignore
-/public/storage
-/vendor
-/node_modules
